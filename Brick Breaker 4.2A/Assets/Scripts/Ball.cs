@@ -9,12 +9,13 @@ public class Ball : MonoBehaviour {
     Vector3 ballPaddleDiff;
     bool gameStarted = false;
     AudioSource audio;
+    AudioClip crackSound;
 
 	// Use this for initialization
 	void Start () {
         audio = GetComponent<AudioSource>();
         paddle = GameObject.FindObjectOfType<Paddle>();
-
+        crackSound = Resources.Load("Sounds/crack") as AudioClip;
         ballPaddleDiff = this.transform.position - paddle.transform.position;
 	}
 
@@ -35,6 +36,14 @@ public class Ball : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        audio.Play();
+        GameObject collisionObject = collision.gameObject;
+        if (collisionObject.tag != "Breakable" && gameStarted)
+        {
+            audio.Play();
+        }
+        else if (collisionObject.tag == "Breakable")
+        {
+            audio.PlayOneShot(crackSound);
+        }
     }
 }
